@@ -6,15 +6,15 @@ import FormControl from "@mui/material/FormControl";
 import { useMediaQuery } from "react-responsive";
 import InteractiveMap from "./InteractiveMap";
 import "./MainScreen.css";
+import PropTypes from "prop-types";
 
-function MainScreen() {
+function MainScreen({ passw }) {
   const [searchType, setSearchType] = useState("Nume");
   const [searchQuery, setSearchQuery] = useState("");
   const [countiesData, setCountiesData] = useState({});
   const [selectedCounty, setSelectedCounty] = useState(null);
 
   const isTabletOrDesktop = useMediaQuery({ query: "(min-width: 768px)" });
-
   const listOfCounties = [
     "Alba",
     "Arad",
@@ -60,10 +60,20 @@ function MainScreen() {
   ];
 
   useEffect(() => {
-    fetch(window.location.pathname + "countiesData.csv")
+    function unshiftData(text) {
+      const shiftPattern = passw.split("").map(Number);
+      let goodData = "";
+      for (let i = 0; i < text.length; i++) {
+        let shiftValue = shiftPattern[i % 3];
+        goodData += String.fromCharCode(text.charCodeAt(i) - shiftValue);
+      }
+      return goodData;
+    }
+
+    fetch(window.location.pathname + "modified_data.csv")
       .then((response) => response.text())
       .then((data) => {
-        const parsedData = parseCSV(data);
+        const parsedData = parseCSV(unshiftData(data));
         setCountiesData(parsedData);
       })
       .catch((error) =>
@@ -85,14 +95,14 @@ function MainScreen() {
       if (columns[0] === "Judet") {
         currentCounty = columns[1].trim();
         counties[currentCounty] = [];
-        i++; // Sărim peste header-ul "Nume, Prenume, Telefon, Data nasterii, Fotografie"
+        i++;
       } else if (currentCounty) {
         counties[currentCounty].push({
           nume: columns[0].trim(),
           prenume: columns[1].trim(),
           telefon: columns[2].trim(),
           dataNasterii: columns[3].trim(),
-          fotografie: columns[4].trim(), // Adăugăm URL-ul imaginii
+          fotografie: columns[4].trim(),
         });
       }
     }
@@ -144,10 +154,7 @@ function MainScreen() {
         data: countiesData[countyName],
       });
     } else {
-      // *******************************
-      // TO DO: insert an alert
-      // *******************************
-      console.log("Nu s-au găsit date pentru județul selectat.");
+      alert("Nu s-au găsit date pentru județul selectat.");
       setSelectedCounty(null);
     }
   };
@@ -161,7 +168,9 @@ function MainScreen() {
   return (
     <div>
       <div className="search-bar">
-        <a href="/judete/">&nbsp;&nbsp; H O M E &nbsp;&nbsp;</a>
+        <button className="homebutton" onClick={() => setSelectedCounty(null)}>
+          H O M E
+        </button>
         <div className="search-params">
           <FormControl>
             <RadioGroup row value={searchType} onChange={handleChange}>
@@ -290,5 +299,9 @@ function MainScreen() {
     </div>
   );
 }
+
+MainScreen.propTypes = {
+  passw: PropTypes.string.isRequired,
+};
 
 export default MainScreen;

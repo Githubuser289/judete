@@ -1,32 +1,25 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types"; // Import pentru validarea props
+import { useState } from "react";
+import "./Login.css";
+import PropTypes from "prop-types";
 
 function Login({ onLogin }) {
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(username, password);
+    onLogin(password);
+    setPassword("");
   };
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <h2>Conectare</h2>
+      <form onSubmit={handleSubmit} className="login">
         <div>
           <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <input
+            id="loginform"
             type="password"
-            placeholder="Password"
+            placeholder="Introduceti parola"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -38,7 +31,6 @@ function Login({ onLogin }) {
   );
 }
 
-// Validarea props-ului 'onLogin'
 Login.propTypes = {
   onLogin: PropTypes.func.isRequired,
 };
