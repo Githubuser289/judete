@@ -165,6 +165,13 @@ function MainScreen({ passw }) {
     return `${day}/${month}/${year}`;
   };
 
+  const getImageSrc = (imageName) => {
+    if (imageName.startsWith("http")) {
+      return imageName;
+    }
+    return `/judete/images/${imageName}`;
+  };
+
   return (
     <div>
       <div className="search-bar">
@@ -257,7 +264,7 @@ function MainScreen({ passw }) {
                     <td>{formatDate(person.dataNasterii)}</td>
                     <td>
                       <img
-                        src={person.fotografie}
+                        src={getImageSrc(person.fotografie)}
                         alt={`${person.nume} ${person.prenume}`}
                         width="150"
                       />
@@ -272,7 +279,7 @@ function MainScreen({ passw }) {
               {selectedCounty.data.map((person, index) => (
                 <div className="person-card" key={index}>
                   <img
-                    src={person.fotografie}
+                    src={getImageSrc(person.fotografie)}
                     alt={`${person.nume} ${person.prenume}`}
                     className="person-photo"
                   />
