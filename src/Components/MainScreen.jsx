@@ -95,7 +95,6 @@ function MainScreen({ passw }) {
       if (columns[0] === "Judet") {
         currentCounty = columns[1].trim();
         counties[currentCounty] = [];
-        i++;
       } else if (currentCounty) {
         counties[currentCounty].push({
           nume: columns[0].trim(),
